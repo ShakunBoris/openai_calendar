@@ -152,6 +152,9 @@ class EVENT_IMPRINT:
     
     def __repr__(self):
         return json.dumps(self.__dict__, default=str, indent=4)
+    
+    def __str__(self) -> str:
+        return f"Event ID: {self.id}, Summary: {self.summary}, Status: {self.status}, \n{self.start}-{self.end}"
 
 class TASK_IMPRINT:
     def __init__(self, task_data: dict):
@@ -181,8 +184,8 @@ class TASK_IMPRINT:
     def __repr__(self):
         return json.dumps(self.__dict__, default=str, indent=4)
 
-    # def __str__(self):
-    #     return f"Task ID: {self.id}, Title: {self.title}, Status: {self.status}"
+    def __str__(self):
+        return f"Task ID: {self.id}, Title: {self.title}, Status: {self.status}"
     
     
 class CALENDAR_IMPRINT:
@@ -217,10 +220,15 @@ class CALENDAR_IMPRINT:
             self.add_task(task)
     
     def __repr__(self):
-        events_repr = [repr(event) for event in self._events]
-        tasks_repr = [repr(task) for task in self._tasks]
-        return f"CALENDAR_IMPRINT(events={events_repr}) \n TASKS_IMPRINT(tasks={tasks_repr})"
+        events = [event for event in self._events]
+        tasks = [task for task in self._tasks]
+        return f"CALENDAR_IMPRINT(events={events}) \n TASKS_IMPRINT(tasks={tasks})"
 
+    def summary(self):
+        for e in self.events:
+            print(e)
+        for t in self.tasks:
+            print(t)
     # def __str__(self):
     #     return f"Calendar ID: {self._calendar_id}, Number of Events: {len(self._events)}"
 

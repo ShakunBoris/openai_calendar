@@ -1,6 +1,7 @@
 import os.path
 import datetime as dt
 import pytz
+import random
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -84,27 +85,32 @@ def get_calendar_tasks(n_events = 10):
         if not items:
             print("No task lists found.")
             return
-
+        tasks = []
         print("Task lists:")
         for item in items:
-            print(f"{item['title']} ({item['id']})")
+            print(f"Task list name: {item['title']} \n (id: {item['id']})")
 
             result_one_list = service_tasks.tasks().list(
                 tasklist=item['id']).execute()
             tasks_one_list = result_one_list.get('items', [])
             for i, task in enumerate(tasks_one_list, 1):
+                tasks.append(task)
                 print(f"    {i}: {task['title']} ({task['id']})")
                 if task.get('notes'):
                     print(f'      notes: {task['notes']}')
                 if task.get('due'):
                     print(f'      due: {task['due']}')
         
-        return events
+        return events, tasks
     except HttpError as error:
         print(f"An error occurred: {error}")
 
 
-def add_event(date=None):
+def add_event(summary: str='No summary argument passed',
+              description: str='no description argument passed',
+              location: str='home/online',
+              date=None, 
+              duration=60):
     # 1. ACTUALIZE CALENDAR AND TASKS
     if date is None:
         # Устанавливаем день и время по умолчанию: завтра в 15:00
@@ -116,16 +122,16 @@ def add_event(date=None):
     
     start_time = date.isoformat()
     # Длительность события 1 час
-    end_time = (date + dt.timedelta(hours=1)).isoformat()
+    end_time = (date + dt.timedelta(minutes=duration)).isoformat()
 
     creds = get_or_create_token()
     service = build("calendar", "v3", credentials=creds)
     google_timezone = service.settings().get(setting='timezone').execute()
     event = {
-        'summary': 'Google I/O 2015',
-        'description': 'A chance to hear more about Google\'s developer products.',
-        'location': 'somewhere',
-        'colorId': 1,
+        'summary': summary,
+        'description': description,
+        'location': location,
+        'colorId': random.randint(1, 11),
         'start': {
             'dateTime': start_time,
             # 'timeZone': 'Asia/Ho_Chi_Minh',
@@ -149,6 +155,9 @@ if __name__ == "__main__":
 1           || get calendar events and tasks
 2           || add_event
 3           || print offline calendar
+4           || print offline tasks
+5           || print full offline calendar objects
+6           || print full offline calendar summary 
 any         || exit   
             '''
         )
@@ -160,13 +169,22 @@ any         || exit
 
         match user_action:
             case 1:
-                events = get_calendar_tasks()
+                events, tasks = get_calendar_tasks()
                 offline_calendar.load_events(events)
+                offline_calendar.load_tasks(tasks)
             case 2:
                 add_event()
-            case 3:
-                print(offline_calendar)
+            case 3:  
                 for e in offline_calendar.events:
-                    print(repr(e))
+                    print(e)
+                print('example of event object:', repr(events[0])) if len(offline_calendar.events)>0  else None
+            case 4:
+                for t in offline_calendar.tasks:
+                    print(t)
+                print('example of task object:', repr(tasks[0])) if len(offline_calendar.tasks)>0  else None
+            case 5:
+                print(offline_calendar)
+            case 6:
+                offline_calendar.summary()                
             case _:
                 break
