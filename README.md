@@ -5,5 +5,8 @@ STATE: DEV
 ## текущее: 
 * реализация Desktop
 * выбор модели LLM LLM_test_*.py
+    - RUBERT
 * выбор модели STT
 
+## для стримлит и градио быстрый старт
+https://www.kdnuggets.com/2023/06/build-ai-chatbot-5-minutes-hugging-face-gradio.html
