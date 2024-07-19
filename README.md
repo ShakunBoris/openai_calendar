@@ -5,7 +5,8 @@ STATE: DEV
 ## текущее: 
 * реализация Desktop
 * выбор модели LLM LLM_test_*.py
-    - RUBERT
+    - RUBERT NO
+    - LLAMA ???
 * выбор модели STT
 
 ## для стримлит и градио быстрый старт
