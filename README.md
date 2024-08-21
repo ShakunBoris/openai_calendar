@@ -5,8 +5,10 @@ STATE: DEV
 ## текущее: 
 * реализация Desktop
 * выбор модели LLM LLM_test_*.py
-    - RUBERT NO
-    - LLAMA ???
+    - RUBERT no
+    - LLAMA no
+    - https://huggingface.co/mistralai/Mistral-Nemo-Instruct-2407 ????????
+    - Groq/Llama-3-Groq-8B-Tool-Use YES
 * выбор модели STT
 
 ## для стримлит и градио быстрый старт
